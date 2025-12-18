@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Ocean Cleanup Mini Game</title>
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #ffffff;
+      color: #222;
+    }
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+    header{
+      display:flex;
+      flex-wrap:wrap;
+      justify-content:space-between;
+      align-items:flex-end;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    h1{ margin:0; font-size: 28px; }
+    .sub{ margin:6px 0 0; color:#555; max-width: 680px; }
+    .panel{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 10px;
+      align-items:center;
+      margin: 14px 0 16px;
+    }
+    .stat{
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 10px 12px;
+      min-width: 150px;
+      background:#fafafa;
+    }
+    .stat b{ display:block; font-size: 14px; color:#555; font-weight:600; }
+    .stat span{ font-size: 20px; font-weight:700; }
+    .btns{ display:flex; gap:10px; flex-wrap:wrap; }
+    button{
+      border: 1px solid #111;
+      background:#111;
+      color:#fff;
+      padding: 10px 14px;
+      border-radius: 10px;
+      cursor:pointer;
+      font-weight: 600;
+    }
+    button.secondary{
+      background:#fff;
+      color:#111;
+    }
+    button:disabled{
+      opacity:.5;
+      cursor:not-allowed;
+    }
+
+    .game{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+
+    .board{
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      overflow:hidden;
+      background: #f8fafc;
+      position: relative;
+      height: 520px;
+    }
+
+    /* Simple “ocean” background */
+    .board::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,.65), rgba(255,255,255,0) 35%),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,.55), rgba(255,255,255,0) 40%),
+        linear-gradient(to bottom, #cfe9ff, #7cc0ff, #1d7bd8);
+      opacity: .9;
+      pointer-events:none;
+    }
+
+    .hint{
+      margin:0;
+      color:#333;
+      line-height:1.5;
+    }
+
+    .target{
+      position:absolute;
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size: 34px;
+      user-select:none;
+      cursor:pointer;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 8px 20px rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.25);
+      background: rgba(255,255,255,.18);
+      backdrop-filter: blur(3px);
+    }
+
+    .msg{
+      border: 1px solid #ddd;
+      border-radius: 14px;
+      padding: 12px 14px;
+      background:#fff;
+      min-height: 52px;
+    }
+
+    .nav{
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #eee;
+      display:flex;
+      gap: 14px;
+      flex-wrap:wrap;
+    }
+    .nav a{
+      color:#1f3cff;
+      text-decoration:none;
+      font-weight:600;
+    }
+    .nav a:hover{ text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Ocean Cleanup Mini Game</h1>
+        <p class="sub">
+          Click the trash to collect it. Avoid clicking marine life. Try to get the highest score before time runs out.
+        </p>
+      </div>
+      <div class="btns">
+        <button id="startBtn">Start (30s)</button>
+        <button id="resetBtn" class="secondary">Reset</button>
+      </div>
+    </header>
+
+    <div class="panel">
+      <div class="stat">
+        <b>Time Left</b>
+        <span id="timeLeft">30</span>
+      </div>
+      <div class="stat">
+        <b>Score</b>
+        <span id="score">0</span>
+      </div>
+      <div class="stat">
+        <b>High Score</b>
+        <span id="highScore">0</span>
+      </div>
+    </div>
+
+    <div class="game">
+      <div class="board" id="board" aria-label="Game board"></div>
+
+      <div class="msg" id="message">
+        Tip: Trash gives points. Clicking marine life costs points. You can restart anytime.
+      </div>
+
+      <!-- Optional: put the rules as a list (still helpful) -->
+      <p class="hint">
+        Rules:
+        1) Trash: +1 point
+        2) “Big trash” (rare): +3 points
+        3) Marine life: -2 points
+      </p>
+    </div>
+
+    <div class="nav">
+      <!-- Adjust paths if your folder structure differs -->
+      <a href="index.html">Home</a>
+      <a href="interest.html">Back to Interest Page</a>
+    </div>
+  </div>
+
+  <script>
+    const board = document.getElementById("board");
+    const startBtn = document.getElementById("startBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const timeLeftEl = document.getElementById("timeLeft");
+    const scoreEl = document.getElementById("score");
+    const highScoreEl = document.getElementById("highScore");
+    const msgEl = document.getElementById("message");
+
+    const GAME_SECONDS = 30;
+
+    let timer = null;
+    let spawner = null;
+    let timeLeft = GAME_SECONDS;
+    let score = 0;
+    let running = false;
+
+    const TRASH = ["🧴","🛍️","🥤","🍾","🧃","🧻","🧷"];
+    const LIFE  = ["🐢","🐠","🐟","🦈","🐙","🪼","🦀"];
+
+    function loadHighScore(){
+      const saved = localStorage.getItem("oceanCleanupHighScore");
+      const hs = saved ? Number(saved) : 0;
+      highScoreEl.textContent = String(hs);
+      return hs;
+    }
+
+    function saveHighScore(newScore){
+      localStorage.setItem("oceanCleanupHighScore", String(newScore));
+      highScoreEl.textContent = String(newScore);
+    }
+
+    function setMessage(text){
+      msgEl.textContent = text;
+    }
+
+    function setScore(newScore){
+      score = newScore;
+      scoreEl.textContent = String(score);
+      const hs = loadHighScore();
+      if(score > hs){
+        saveHighScore(score);
+        setMessage("New high score! Keep going.");
+      }
+    }
+
+    function resetGameUI(){
+      // Remove any existing targets
+      board.querySelectorAll(".target").forEach(el => el.remove());
+      timeLeft = GAME_SECONDS;
+      timeLeftEl.textContent = String(timeLeft);
+      setScore(0);
+      setMessage("Tip: Trash gives points. Clicking marine life costs points. Press Start.");
+    }
+
+    function rand(min, max){
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function spawnTarget(){
+      // clean up older targets sometimes
+      const existing = board.querySelectorAll(".target");
+      if(existing.length > 8){
+        existing[0].remove();
+      }
+
+      // pick type
+      const roll = Math.random();
+      let type = "trash";
+      let emoji = TRASH[rand(0, TRASH.length-1)];
+      let points = 1;
+
+      if(roll < 0.22){
+        type = "life";
+        emoji = LIFE[rand(0, LIFE.length-1)];
+        points = -2;
+      } else if(roll > 0.92){
+        // rare big trash
+        type = "bigtrash";
+        emoji = "🛢️";
+        points = 3;
+      }
+
+      const el = document.createElement("div");
+      el.className = "target";
+      el.setAttribute("data-type", type);
+      el.setAttribute("data-points", String(points));
+      el.textContent = emoji;
+
+      // random position inside board bounds
+      const rect = board.getBoundingClientRect();
+      // avoid edges a bit
+      const x = rand(50, Math.max(50, rect.width - 50));
+      const y = rand(70, Math.max(70, rect.height - 70));
+      el.style.left = x + "px";
+      el.style.top = y + "px";
+
+      // auto remove after a short time
+      const lifeMs = type === "bigtrash" ? 1400 : 1700;
+      const removal = setTimeout(() => {
+        if(el && el.parentNode) el.remove();
+      }, lifeMs);
+
+      el.addEventListener("click", () => {
+        clearTimeout(removal);
+        const pts = Number(el.getAttribute("data-points"));
+        const kind = el.getAttribute("data-type");
+
+        if(kind === "life"){
+          setMessage("Oops — that was marine life. Try to click only trash.");
+        } else if(kind === "bigtrash"){
+          setMessage("Nice! You found big trash (+3).");
+        } else {
+          setMessage("Good catch! Trash collected.");
+        }
+
+        setScore(score + pts);
+        el.remove();
+      });
+
+      board.appendChild(el);
+    }
+
+    function startGame(){
+      if(running) return;
+      running = true;
+      startBtn.disabled = true;
+
+      // reset
+      board.querySelectorAll(".target").forEach(el => el.remove());
+      timeLeft = GAME_SECONDS;
+      timeLeftEl.textContent = String(timeLeft);
+      setScore(0);
+      setMessage("Game started! Clean the ocean.");
+
+      timer = setInterval(() => {
+        timeLeft -= 1;
+        timeLeftEl.textContent = String(timeLeft);
+
+        if(timeLeft <= 0){
+          endGame();
+        }
+      }, 1000);
+
+      spawner = setInterval(() => {
+        spawnTarget();
+      }, 520);
+    }
+
+    function endGame(){
+      running = false;
+      startBtn.disabled = false;
+
+      clearInterval(timer);
+      clearInterval(spawner);
+      timer = null;
+      spawner = null;
+
+      // clear remaining targets
+      board.querySelectorAll(".target").forEach(el => el.remove());
+
+      const hs = loadHighScore();
+      if(score >= hs){
+        setMessage(`Time! Final score: ${score}. That’s your best so far.`);
+      } else {
+        setMessage(`Time! Final score: ${score}. High score: ${hs}.`);
+      }
+    }
+
+    startBtn.addEventListener("click", startGame);
+
+    resetBtn.addEventListener("click", () => {
+      if(running){
+        endGame();
+      }
+      resetGameUI();
+    });
+
+    // init
+    loadHighScore();
+    resetGameUI();
+  </script>
+</body>
+</html>

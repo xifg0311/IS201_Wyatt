@@ -1,0 +1,146 @@
+:root{
+  --text:#1f2937;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --link:#2563eb;
+  --card:#ffffff;
+  --bg:#f8fafc;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+/* Top nav */
+.topbar{
+  position: sticky;
+  top: 0;
+  background: rgba(255,255,255,.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 22px;
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  z-index: 10;
+}
+
+.brand{
+  font-weight: 800;
+  letter-spacing: .2px;
+}
+
+.links a{
+  margin-left: 16px;
+  text-decoration:none;
+  color: var(--link);
+  font-weight: 700;
+}
+
+.links a:hover{
+  text-decoration: underline;
+}
+
+/* Layout */
+.container{
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 26px 18px 60px;
+}
+
+h1{
+  margin: 18px 0 8px;
+  font-size: 44px;
+  letter-spacing: -0.5px;
+}
+
+/* Cards / sections */
+.section{
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 22px;
+  margin-top: 18px;
+}
+
+.section h2{
+  margin: 0 0 10px;
+  font-size: 26px;
+}
+
+.section p{
+  margin: 10px 0;
+}
+
+.section .note{
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* Lists */
+ol{
+  margin: 10px 0 0 20px;
+}
+
+ul{
+  margin: 8px 0 12px 18px;
+}
+
+/* Responsive YouTube */
+.video-wrap{
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background:#000;
+  margin-top: 12px;
+}
+
+.video-wrap iframe{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  border:0;
+}
+
+/* Photo */
+.photo{
+  width: 100%;
+  max-width: 760px;
+  height: auto;
+  display:block;
+  margin: 14px auto 0;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+}
+
+/* Tableau */
+#tableau{
+  text-align:center;
+}
+
+#tableau .tableauPlaceholder{
+  margin: 14px auto 0;
+}
+
+/* App link */
+.app-link{
+  display:inline-block;
+  margin-top: 10px;
+  color: var(--link);
+  font-weight: 800;
+  text-decoration:none;
+}
+
+.app-link:hover{
+  text-decoration: underline;
+}

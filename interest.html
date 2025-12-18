@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hsin-I Lin | Interest</title>
+  <link rel="stylesheet" href="css/mystyles.css">
+</head>
+
+<body>
+  <!-- Simple custom navigation (no Bootstrap) -->
+  <div class="topbar">
+    <div class="brand">Hsin-I (Wyatt) Lin</div>
+    <div class="links">
+      <a href="index.html">Home</a>
+      <a href="#video">Video</a>
+      <a href="#tableau">Tableau</a>
+      <a href="app.html">Web App</a>
+    </div>
+  </div>
+
+  <div class="container">
+    <h1>Freediving</h1>
+
+    <!-- Intro -->
+    <div class="section">
+      <h2>What is Freediving?</h2>
+      <p>
+        Freediving is a form of underwater diving that relies on breath-holding rather than the use of scuba equipment.
+        It has been practiced for centuries for activities such as fishing, gathering, and exploration, and today it is also a recreational and competitive sport.
+        Freediving emphasizes relaxation, breath control, and awareness of the body and surrounding environment.
+      </p>
+
+      <p>
+        I became interested in freediving because of the sense of freedom it offers underwater. In 2023, I earned my AIDA 2 freediving
+        certification in Taiwan. What I enjoy most is the ability to move freely in the water while observing marine life and underwater landscapes.
+        Being immersed in the ocean and its natural environment is something I find genuinely fascinating.
+      </p>
+    </div>
+
+    <!-- Nested list requirement -->
+    <div class="section">
+      <h2>What Freediving Involves</h2>
+
+      <ol>
+        <li>Physical Skills
+          <ul>
+            <li>Breath control and breath-holding techniques</li>
+            <li>Body positioning and movement in water</li>
+            <li>Equalization to adapt to changes in pressure</li>
+          </ul>
+        </li>
+        <li>Mental Awareness
+          <ul>
+            <li>Staying calm and relaxed underwater</li>
+            <li>Managing stress and conserving energy</li>
+            <li>Maintaining focus and self-awareness</li>
+          </ul>
+        </li>
+      </ol>
+
+    </div>
+
+    <!-- Video + photo -->
+    <div class="section" id="video">
+      <h2>Freediving in the Ocean</h2>
+      <p>
+        The video below provides a visual example of freediving and helps illustrate the calm and immersive nature of the activity.
+      </p>
+
+      <!-- Responsive video wrapper -->
+      <div class="video-wrap">
+        <iframe
+          src="https://www.youtube.com/embed/OnvQggy3Ezw"
+          title="Freediving video"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <p>
+        If the embedded video does not load, watch it on YouTube:
+        <a href="https://youtu.be/OnvQggy3Ezw" target="_blank" rel="noopener">Watch on YouTube</a>
+      </p>
+
+      <p>
+        This photo was taken in Oslob, Philippines, and shows me swimming alongside a whale shark.
+      </p>
+
+      <img
+        src="assets/GOPR0047.jpg"
+        alt="Me swimming with a whale shark in Oslob, Philippines"
+        class="photo">
+    </div>
+
+    <!-- Tableau -->
+    <div class="section" id="tableau">
+      <h2>Ocean Data Visualization</h2>
+      <p>
+        The interactive Tableau visualization below focuses on ocean pollution and helps highlight environmental issues in marine ecosystems.
+      </p>
+
+      <div class='tableauPlaceholder' id='viz1766028151974' style='position: relative'>
+        <noscript>
+          <a href='#'>
+            <img alt='Garbage in the Ocean'
+                 src='https://public.tableau.com/static/images/MP/MPQ6Y7P8K/1_rss.png'
+                 style='border: none' />
+          </a>
+        </noscript>
+
+        <object class='tableauViz' style='display:none;'>
+          <param name='host_url' value='https%3A%2F%2Fpublic.tableau.com%2F' />
+          <param name='embed_code_version' value='3' />
+          <param name='path' value='shared&#47;MPQ6Y7P8K' />
+          <param name='toolbar' value='yes' />
+          <param name='static_image' value='https://public.tableau.com/static/images/MP/MPQ6Y7P8K/1.png' />
+          <param name='animate_transition' value='yes' />
+          <param name='display_static_image' value='yes' />
+          <param name='display_spinner' value='yes' />
+          <param name='display_overlay' value='yes' />
+          <param name='display_count' value='yes' />
+          <param name='language' value='zh-TW' />
+        </object>
+      </div>
+
+      <script type='text/javascript'>
+        var divElement = document.getElementById('viz1766028151974');
+        var vizElement = divElement.getElementsByTagName('object')[0];
+
+        vizElement.style.width = '100%';
+        vizElement.style.maxWidth = '900px';
+        vizElement.style.height = '700px';
+
+        var scriptElement = document.createElement('script');
+        scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+        vizElement.parentNode.insertBefore(scriptElement, vizElement);
+      </script>
+    </div>
+
+    <!-- Web app link -->
+    <div class="section">
+      <h2>Try the Web App</h2>
+      <p>
+        I created a simple interactive web app about cleaning trash in the ocean. Click the link below to play.
+      </p>
+      <a class="app-link" href="app.html">Go to Web App →</a>
+    </div>
+
+  </div>
+</body>
+</html>
